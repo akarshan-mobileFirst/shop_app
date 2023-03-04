@@ -38,14 +38,19 @@ const styles = {
   },
   itemTileTextWrapper: {
     marginHorizontal: FontSize.small,
-    width: deviceWidth * 0.55,
+    flex: 1,
   },
   itemTileTitle: {
     color: Colors.black,
     fontSize: FontSize.base,
     fontWeight: 'bold',
+    textAlign: 'justify',
   },
-  itemTileDescription: {color: Colors.black, fontSize: FontSize.small},
+  itemTileDescription: {
+    color: Colors.black,
+    fontSize: FontSize.small,
+    textAlign: 'justify',
+  },
 };
 
 export default styles;

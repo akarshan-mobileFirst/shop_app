@@ -24,8 +24,8 @@ const styles = {
     elevation: 5,
     backgroundColor: Colors.white,
     shadowColor: Colors.blue,
-    shadowRadius: 5,
-    shadowOpacity: 0.5,
+    shadowRadius: 1,
+    shadowOpacity: 0.2,
     shadowOffset: {
       width: 0,
       height: 2,

@@ -14,7 +14,7 @@ export const API_URL = {
 
 // Texts
 export const Texts = {
-  appBarTitle: 'Online Shop',
+  appBarTitle: 'Shop Now!',
   artWorks: 'Artworks',
   beer: 'Beer',
   books: 'Books',

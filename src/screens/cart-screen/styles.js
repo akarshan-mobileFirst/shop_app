@@ -38,7 +38,7 @@ const styles = {
   },
   itemTileTextWrapper: {
     marginHorizontal: FontSize.small,
-    width: deviceWidth * 0.55,
+    flex: 1,
   },
   itemTileTitle: {
     color: Colors.black,
