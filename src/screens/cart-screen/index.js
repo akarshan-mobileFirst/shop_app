@@ -86,10 +86,9 @@ function itemTileContent(item, index, backImg, dispatch) {
 }
 
 function itemTile(title, data, dispatch) {
-  const marginTop = title === Texts.artWorks ? 0 : 10;
   return (
     <View>
-      <Text style={[styles.categoryText, {marginTop: marginTop}]}>{title}</Text>
+      <Text style={styles.categoryText}>{title}</Text>
       <FlatList
         bounces={false}
         scrollEnabled={false}
