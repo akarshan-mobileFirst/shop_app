@@ -23,7 +23,7 @@ import {Texts} from '../../utils/constants';
 import AppBar from '../../components/appbar';
 import Quantity from '../../components/quantity';
 import backImage from '../../components/backImage';
-import { FontSize } from '../../utils/fontsize';
+import {FontSize} from '../../utils/fontsize';
 
 function itemTileContent(item, index, backImg, dispatch) {
   return (

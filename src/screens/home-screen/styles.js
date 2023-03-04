@@ -1,5 +1,4 @@
 import {Colors} from '../../utils/colors';
-import {deviceWidth} from '../../utils/constants';
 import {FontSize} from '../../utils/fontsize';
 
 const styles = {
