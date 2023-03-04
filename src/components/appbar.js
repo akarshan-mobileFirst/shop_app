@@ -37,5 +37,6 @@ const styles = {
     fontStyle: 'italic',
     fontSize: FontSize.xxl,
     marginLeft: FontSize.xSmall,
+    paddingHorizontal: 5,
   },
 };
