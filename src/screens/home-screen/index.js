@@ -9,13 +9,16 @@ import {
   View,
   ActivityIndicator,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  addToCart,
   artworksApi,
   beerApi,
   booksApi,
   makeupApi,
+  removeFromCart,
   shopSelector,
 } from '../../store/slices/shop_slice';
 import styles from './styles';
@@ -24,13 +27,26 @@ import {Texts} from '../../utils/constants';
 import AppBar from '../../components/appbar';
 import AppButton from '../../components/button';
 import Quantity from '../../components/quantity';
+import backImage from '../../components/backImage';
 
-function itemTileContent(item, index, backImage) {
+function itemInCart(itm, cartData) {
+  if (cartData.length > 0 && !!itm?.id) {
+    var itemIndex = cartData.findIndex((item, index) => item.id === itm.id);
+    if (itemIndex > -1 && !!cartData[itemIndex]?.quantity) {
+      return cartData[itemIndex].quantity;
+    }
+  }
+  return 0;
+}
+
+function itemTileContent(item, index, cartData, backImg, dispatch) {
+  let itemQuantity = itemInCart(item, cartData);
+
   return (
     <View style={styles.itemTileContainer}>
       <ImageBackground
         source={{
-          uri: backImage,
+          uri: backImg,
         }}
         resizeMode="contain"
         style={styles.itemTileImage}>
@@ -44,13 +60,46 @@ function itemTileContent(item, index, backImage) {
         <Text style={styles.itemTileTitle}>{item.title}</Text>
         <Text style={styles.itemTileDescription}>{item.description}</Text>
       </View>
-      <AppButton />
-      {/* <Quantity /> */}
+      {itemQuantity > 0 ? (
+        <Quantity
+          quantity={itemQuantity}
+          onPlusPress={() => {
+            dispatch(
+              addToCart(item, data => {
+                if (data?.success === false) {
+                  return Alert.alert(Texts.cartUpdateFailed);
+                }
+              }),
+            );
+          }}
+          onMinusPress={() => {
+            dispatch(
+              removeFromCart(item, data => {
+                if (data?.success === false) {
+                  return Alert.alert(Texts.cartUpdateFailed);
+                }
+              }),
+            );
+          }}
+        />
+      ) : (
+        <AppButton
+          onPress={() => {
+            dispatch(
+              addToCart(item, data => {
+                if (data?.success === false) {
+                  return Alert.alert(Texts.cartUpdateFailed);
+                }
+              }),
+            );
+          }}
+        />
+      )}
     </View>
   );
 }
 
-function itemTile(title, data, backImage) {
+function itemTile(title, data, cartData, dispatch) {
   const marginTop = title === Texts.artWorks ? 0 : 10;
   return (
     <View>
@@ -61,7 +110,13 @@ function itemTile(title, data, backImage) {
         data={data}
         keyExtractor={(item, index) => item.id}
         renderItem={({item, index}) => {
-          return itemTileContent(item, index, backImage);
+          return itemTileContent(
+            item,
+            index,
+            cartData,
+            backImage(item.category ?? ''),
+            dispatch,
+          );
         }}
       />
     </View>
@@ -70,7 +125,8 @@ function itemTile(title, data, backImage) {
 
 function HomeScreen() {
   const dispatch = useDispatch();
-  const {loading, artworks, beer, books, makeup} = useSelector(shopSelector);
+  const {loading, artworks, beer, books, cart, makeup} =
+    useSelector(shopSelector);
 
   useEffect(() => {
     dispatch(artworksApi());
@@ -99,29 +155,10 @@ function HomeScreen() {
           bounces={false}
           horizontal={false}>
           {artworks?.length > 0 &&
-            itemTile(
-              Texts.artWorks,
-              artworks,
-              'https://www.clipartmax.com/png/middle/109-1097604_computer-icons-painting-artist-painter-drawing-painter-icon.png',
-            )}
-          {beer?.length > 0 &&
-            itemTile(
-              Texts.beer,
-              beer,
-              'https://png.pngtree.com/png-vector/20191004/ourlarge/pngtree-beer-icon-png-image_1791305.jpg',
-            )}
-          {books?.length > 0 &&
-            itemTile(
-              Texts.books,
-              books,
-              'https://cdn.pixabay.com/photo/2015/11/19/21/10/glasses-1052010__340.jpg',
-            )}
-          {makeup?.length > 0 &&
-            itemTile(
-              Texts.makeup,
-              makeup,
-              'https://cdn.britannica.com/35/222035-050-C68AD682/makeup-cosmetics.jpg',
-            )}
+            itemTile(Texts.artWorks, artworks, cart, dispatch)}
+          {beer?.length > 0 && itemTile(Texts.beer, beer, cart, dispatch)}
+          {books?.length > 0 && itemTile(Texts.books, books, cart, dispatch)}
+          {makeup?.length > 0 && itemTile(Texts.makeup, makeup, cart, dispatch)}
         </ScrollView>
       )}
     </SafeAreaView>

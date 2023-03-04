@@ -12,12 +12,6 @@ export const API_URL = {
   MAKEUP_API: 'http://makeup-api.herokuapp.com/api/v1/products.json',
 };
 
-// Messages
-export const Message = {
-  // OTP_SENT:
-  //   "We've sent a verification code to your mobile number. Please check the same.",
-};
-
 // Texts
 export const Texts = {
   appBarTitle: 'Online Shop',
@@ -28,5 +22,6 @@ export const Texts = {
   add: 'Add',
   loading: 'Loading...',
   cart: 'Cart',
-  emptyCart: 'Cart is empty',
+  emptyCart: 'Your cart is empty!',
+  cartUpdateFailed: 'Unable to update the cart',
 };

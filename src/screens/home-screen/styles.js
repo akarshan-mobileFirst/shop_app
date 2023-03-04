@@ -20,9 +20,10 @@ const styles = {
   },
   scrollView: {flex: 1, margin: FontSize.xSmall},
   categoryText: {
-    color: Colors.black,
+    color: Colors.blue,
     fontSize: FontSize.large,
     fontWeight: 'bold',
+    opacity: 0.7,
   },
   itemTileContainer: {
     flexDirection: 'row',

@@ -18,6 +18,8 @@ export const GET_ARTWORKS = generateActionTypes('GET_ARTWORKS');
 export const GET_BEER = generateActionTypes('GET_BEER');
 export const GET_BOOKS = generateActionTypes('GET_BOOKS');
 export const GET_MAKEUP = generateActionTypes('GET_MAKEUP');
+export const ADD_TO_CART = generateActionTypes('ADD_TO_CART');
+export const REMOVE_FROM_CART = generateActionTypes('REMOVE_FROM_CART');
 
 // Reducer
 const shopReducer = builder => {
@@ -69,7 +71,53 @@ const shopReducer = builder => {
     })
     .addCase(GET_MAKEUP.FAILED, (state, action) => {
       state.loading = false;
-    });
+    })
+    .addCase(ADD_TO_CART.REQUEST, (state, action) => {})
+    .addCase(ADD_TO_CART.DONE, (state, action) => {
+      if (action?.payload) {
+        var cartDetails = state.cart;
+        if (action.payload?.id && cartDetails.length > -1) {
+          var itemIndex = cartDetails.findIndex(
+            (item, index) => item.id === action.payload.id,
+          );
+
+          if (
+            itemIndex > -1 &&
+            !!cartDetails[itemIndex] &&
+            !!cartDetails[itemIndex]?.quantity
+          ) {
+            cartDetails[itemIndex].quantity += 1;
+          } else {
+            cartDetails.push({...action.payload, quantity: 1});
+          }
+        }
+        state.cart = cartDetails;
+      }
+    })
+    .addCase(ADD_TO_CART.FAILED, (state, action) => {})
+    .addCase(REMOVE_FROM_CART.REQUEST, (state, action) => {})
+    .addCase(REMOVE_FROM_CART.DONE, (state, action) => {
+      if (action?.payload) {
+        var cartDetails = state.cart;
+        if (action.payload?.id && cartDetails.length > -1) {
+          var itemIndex = cartDetails.findIndex(
+            (item, index) => item.id === action.payload.id,
+          );
+
+          if (!!cartDetails[itemIndex] && !!cartDetails[itemIndex]?.quantity) {
+            if (itemIndex > -1) {
+              if (cartDetails[itemIndex].quantity > 1) {
+                cartDetails[itemIndex].quantity -= 1;
+              } else if (cartDetails[itemIndex].quantity < 2) {
+                cartDetails.splice(itemIndex, 1);
+              }
+            }
+          }
+        }
+        state.cart = cartDetails;
+      }
+    })
+    .addCase(REMOVE_FROM_CART.FAILED, (state, action) => {});
 };
 
 // A Slice
@@ -277,6 +325,50 @@ export function makeupApi() {
       console.log('error: ', error);
       dispatch(updateStatus({[GET_MAKEUP.STATUS]: STATUS.FAILED}));
       dispatch(GET_MAKEUP.FAILED());
+    }
+  };
+}
+
+export function addToCart(data, callback) {
+  return async dispatch => {
+    let callbackResponse = {
+      success: false,
+    };
+
+    try {
+      dispatch(updateStatus({[ADD_TO_CART.STATUS]: STATUS.REQUEST}));
+      dispatch(ADD_TO_CART.REQUEST());
+      dispatch(updateStatus({[ADD_TO_CART.STATUS]: ADD_TO_CART.DONE}));
+      dispatch(ADD_TO_CART.DONE(data));
+    } catch (error) {
+      console.log('error: ', error);
+      dispatch(updateStatus({[ADD_TO_CART.STATUS]: STATUS.FAILED}));
+      dispatch(ADD_TO_CART.FAILED());
+      callbackResponse.success = false;
+      callback(callbackResponse);
+    }
+  };
+}
+
+export function removeFromCart(data, callback) {
+  return async dispatch => {
+    let callbackResponse = {
+      success: false,
+    };
+
+    try {
+      dispatch(updateStatus({[REMOVE_FROM_CART.STATUS]: STATUS.REQUEST}));
+      dispatch(REMOVE_FROM_CART.REQUEST());
+      dispatch(
+        updateStatus({[REMOVE_FROM_CART.STATUS]: REMOVE_FROM_CART.DONE}),
+      );
+      dispatch(REMOVE_FROM_CART.DONE(data));
+    } catch (error) {
+      console.log('error: ', error);
+      dispatch(updateStatus({[REMOVE_FROM_CART.STATUS]: STATUS.FAILED}));
+      dispatch(REMOVE_FROM_CART.FAILED());
+      callbackResponse.success = false;
+      callback(callbackResponse);
     }
   };
 }

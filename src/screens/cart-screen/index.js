@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   Text,
   StatusBar,
@@ -7,22 +7,30 @@ import {
   FlatList,
   Image,
   View,
+  Alert,
   ImageBackground,
 } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {shopSelector} from '../../store/slices/shop_slice';
+import {
+  addToCart,
+  removeFromCart,
+  shopSelector,
+} from '../../store/slices/shop_slice';
 import styles from './styles';
 import {Colors} from '../../utils/colors';
 import {Texts} from '../../utils/constants';
 import AppBar from '../../components/appbar';
 import Quantity from '../../components/quantity';
+import backImage from '../../components/backImage';
+import { FontSize } from '../../utils/fontsize';
 
-function itemTileContent(item, index, backImage) {
+function itemTileContent(item, index, backImg, dispatch) {
   return (
     <View style={styles.itemTileContainer}>
       <ImageBackground
         source={{
-          uri: backImage,
+          uri: backImg,
         }}
         resizeMode="contain"
         style={styles.itemTileImage}>
@@ -33,15 +41,51 @@ function itemTileContent(item, index, backImage) {
         />
       </ImageBackground>
       <View style={styles.itemTileTextWrapper}>
-        <Text style={styles.itemTileTitle}>{item.title}</Text>
-        <Text style={styles.itemTileDescription}>{item.description}</Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={styles.itemTileTitle}>
+          {item.title}
+        </Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={styles.itemTileDescription}>
+          {item.description}
+        </Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={styles.itemTileCategory}>
+          {`Category: ${item.category}`}
+        </Text>
       </View>
-      <Quantity />
+      <Quantity
+        quantity={item.quantity}
+        onPlusPress={() => {
+          dispatch(
+            addToCart(item, data => {
+              if (data?.success === false) {
+                return Alert.alert(Texts.cartUpdateFailed);
+              }
+            }),
+          );
+        }}
+        onMinusPress={() => {
+          dispatch(
+            removeFromCart(item, data => {
+              if (data?.success === false) {
+                return Alert.alert(Texts.cartUpdateFailed);
+              }
+            }),
+          );
+        }}
+      />
     </View>
   );
 }
 
-function itemTile(title, data, backImage) {
+function itemTile(title, data, dispatch) {
   const marginTop = title === Texts.artWorks ? 0 : 10;
   return (
     <View>
@@ -52,7 +96,12 @@ function itemTile(title, data, backImage) {
         data={data}
         keyExtractor={(item, index) => item.id}
         renderItem={({item, index}) => {
-          return itemTileContent(item, index, backImage);
+          return itemTileContent(
+            item,
+            index,
+            backImage(item.category ?? ''),
+            dispatch,
+          );
         }}
       />
     </View>
@@ -77,10 +126,15 @@ function CartScreen() {
           style={styles.scrollView}
           bounces={false}
           horizontal={false}>
-          {itemTile(Texts.cart, cart, '')}
+          {itemTile(Texts.cart, cart, dispatch)}
         </ScrollView>
       ) : (
         <View style={styles.emptyCartWrapper}>
+          <MaterialCommunityIcons
+            name="cart"
+            size={FontSize.massiveBig}
+            color={Colors.blue}
+          />
           <Text style={styles.emptyCartText}>{Texts.emptyCart}</Text>
         </View>
       )}

@@ -13,15 +13,17 @@ const styles = {
     alignItems: 'center',
   },
   emptyCartText: {
-    color: Colors.gray,
+    color: Colors.blue,
     fontSize: FontSize.mediumLarge,
     fontWeight: 'bold',
+    opacity: 0.7,
   },
   scrollView: {flex: 1, margin: FontSize.xSmall},
   categoryText: {
-    color: Colors.black,
+    color: Colors.blue,
     fontSize: FontSize.large,
     fontWeight: 'bold',
+    opacity: 0.7,
   },
   itemTileContainer: {
     flexDirection: 'row',
@@ -44,6 +46,11 @@ const styles = {
     fontWeight: 'bold',
   },
   itemTileDescription: {color: Colors.black, fontSize: FontSize.small},
+  itemTileCategory: {
+    color: Colors.blue,
+    fontSize: FontSize.mediumSmall,
+    fontWeight: '400',
+  },
 };
 
 export default styles;
