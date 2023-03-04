@@ -50,6 +50,17 @@ const styles = {
     fontSize: FontSize.small,
     textAlign: 'justify',
   },
+  emptyProductsWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyProductsText: {
+    color: Colors.blue,
+    fontSize: FontSize.mediumLarge,
+    fontWeight: 'bold',
+    opacity: 0.7,
+  },
 };
 
 export default styles;

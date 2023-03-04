@@ -23,5 +23,6 @@ export const Texts = {
   loading: 'Loading...',
   cart: 'Cart',
   emptyCart: 'Your cart is empty!',
+  emptyProducts: 'No products to show!',
   cartUpdateFailed: 'Unable to update the cart',
 };

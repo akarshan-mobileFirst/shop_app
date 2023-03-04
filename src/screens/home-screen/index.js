@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   addToCart,
   artworksApi,
@@ -28,6 +29,7 @@ import AppBar from '../../components/appbar';
 import AppButton from '../../components/button';
 import Quantity from '../../components/quantity';
 import backImage from '../../components/backImage';
+import {FontSize} from '../../utils/fontsize';
 
 function itemInCart(itm, cartData) {
   if (cartData.length > 0 && !!itm?.id) {
@@ -147,6 +149,18 @@ function HomeScreen() {
         <View style={styles.loader}>
           <ActivityIndicator size="large" color={Colors.blue} />
           <Text style={styles.loaderText}>{Texts.loading}</Text>
+        </View>
+      ) : artworks.length === 0 &&
+        beer.length === 0 &&
+        books.length === 0 &&
+        makeup.length === 0 ? (
+        <View style={styles.emptyProductsWrapper}>
+          <MaterialCommunityIcons
+            name="delete-empty"
+            size={FontSize.massiveBig}
+            color={Colors.blue}
+          />
+          <Text style={styles.emptyProductsText}>{Texts.emptyProducts}</Text>
         </View>
       ) : (
         <ScrollView
